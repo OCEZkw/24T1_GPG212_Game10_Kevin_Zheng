@@ -5,27 +5,24 @@ using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
-    public GameObject customerPrefab;
-    public Transform counter;
-    public Transform[] seats;
-    public float spawnRate = 10f;
+    public GameObject customerPrefab; // Reference to the customer prefab
+    public Transform windowTransform; // Reference to the window transform
+    public float walkSpeed = 1.5f; // Speed at which the customer walks
+    public MenuManager menuManager; // Reference to the MenuManager script
 
-    private float nextSpawnTime = 0f;
-
-    private void Update()
+    private void Start()
     {
-        if (Time.time >= nextSpawnTime)
-        {
-            SpawnCustomer();
-            nextSpawnTime = Time.time + 1f / spawnRate;
-        }
+        // Spawn a customer when the script starts
+        SpawnCustomer();
     }
 
     private void SpawnCustomer()
     {
-        GameObject customer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
-        CustomerController customerController = customer.GetComponent<CustomerController>();
-        customerController.SetDestination(counter.position);
-        customerController.seats = seats;
+        // Instantiate a new customer prefab
+        GameObject newCustomer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
+        // Get the CustomerController component
+        CustomerController customerController = newCustomer.GetComponent<CustomerController>();
+        // Start the customer moving towards the window
+        customerController.SetTarget(windowTransform, walkSpeed, menuManager);
     }
 }

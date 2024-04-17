@@ -4,56 +4,45 @@ using UnityEngine;
 
 public class CustomerController : MonoBehaviour
 {
-    public float moveSpeed = 2f;
-    public Transform[] seats;
+    private Transform target;
+    private float walkSpeed;
+    [SerializeField] private MenuManager menuManager;
 
-    private int currentSeatIndex = 0;
-    private bool isOrdering = false;
-    private bool isServed = false;
-
-    private Vector3 destination;
-    private Rigidbody2D rb;
-
-    private void Start()
+    public void SetTarget(Transform newTarget, float speed, MenuManager manager)
     {
-        rb = GetComponent<Rigidbody2D>();
+        target = newTarget;
+        walkSpeed = speed;
+        menuManager = manager;
+        StartCoroutine(MoveToTarget());
     }
 
-    private void Update()
+    private IEnumerator MoveToTarget()
     {
-        if (!isServed)
+        while (Vector2.Distance(transform.position, target.position) > 0.1f)
         {
-            if (isOrdering)
-            {
-                // Wait for player to enable menu panel
-                // Handle ordering logic
-            }
-            else
-            {
-                // Move towards the destination
-                Vector2 direction = (destination - transform.position).normalized;
-                rb.velocity = direction * moveSpeed;
-            }
+            transform.position = Vector2.MoveTowards(transform.position, target.position, walkSpeed * Time.deltaTime);
+            yield return null;
         }
+
+        // Customer has reached the target (window)
+        // Implement ordering behavior here
+        OrderFood();
     }
 
-    public void SetDestination(Vector3 destination)
+    private void OrderFood()
     {
-        this.destination = destination;
-    }
+        if (menuManager == null)
+        {
+            Debug.LogError("MenuManager is not assigned!");
+            return;
+        }
+        // Order a random item from the menu
+        int randomIndex = Random.Range(0, menuManager.menuItems.Count);
+        string orderedItem = menuManager.menuItems[randomIndex];
+        Debug.Log("Customer ordered: " + orderedItem);
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Counter") && !isOrdering)
-        {
-            isOrdering = true;
-        }
-        else if (other.CompareTag("Seat") && isOrdering && !isServed)
-        {
-            isServed = true;
-            transform.position = seats[currentSeatIndex].position;
-            currentSeatIndex++;
-            isOrdering = false;
-        }
+        // Add the item to the order list
+        menuManager.orderList.Add(orderedItem);
+        menuManager.UpdateOrderText();
     }
 }

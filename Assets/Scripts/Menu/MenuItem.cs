@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class MenuItem
+public enum MenuItem
 {
-    public string itemName;
-    public int price;
+    None,
+    Item1,
+    Item2,
+    Item3,
+    Item4,
+    Item5,
+    Item6
 }
