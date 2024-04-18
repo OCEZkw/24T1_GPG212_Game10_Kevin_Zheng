@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MenuItem
+public class MenuItem
 {
-    None,
-    Item1,
-    Item2,
-    Item3,
-    Item4,
-    Item5,
-    Item6
+    public string itemName;
+    public float price;
+
+    public MenuItem(string name, float cost)
+    {
+        itemName = name;
+        price = cost;
+    }
 }

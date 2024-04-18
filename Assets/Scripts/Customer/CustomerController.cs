@@ -5,7 +5,7 @@ using UnityEngine;
 public class CustomerController : MonoBehaviour
 {
     private Transform target;
-    private float walkSpeed;
+    public float walkSpeed;
     [SerializeField] private MenuManager menuManager;
 
     public void SetTarget(Transform newTarget, float speed, MenuManager manager)
@@ -26,23 +26,36 @@ public class CustomerController : MonoBehaviour
 
         // Customer has reached the target (window)
         // Implement ordering behavior here
-        OrderFood();
+        yield return StartCoroutine(OrderFood());
     }
 
-    private void OrderFood()
+    private IEnumerator OrderFood()
     {
         if (menuManager == null)
         {
             Debug.LogError("MenuManager is not assigned!");
-            return;
+            yield break;
         }
-        // Order a random item from the menu
-        int randomIndex = Random.Range(0, menuManager.menuItems.Count);
-        string orderedItem = menuManager.menuItems[randomIndex];
-        Debug.Log("Customer ordered: " + orderedItem);
 
-        // Add the item to the order list
-        menuManager.orderList.Add(orderedItem);
-        menuManager.UpdateOrderText();
+        // Order multiple items from the menu
+        int numItemsToOrder = Random.Range(1, 4); // Order 1 to 3 items
+        for (int i = 0; i < numItemsToOrder; i++)
+        {
+            menuManager.customerText.gameObject.SetActive(true);
+            int randomIndex = Random.Range(0, menuManager.menuItems.Count);
+            if (randomIndex >= 0 && randomIndex < menuManager.menuItems.Count)
+            {
+                MenuItem orderedItem = menuManager.menuItems[randomIndex];
+                Debug.Log("Customer selected: " + orderedItem.itemName);
+                yield return new WaitForSeconds(3f); // Wait for 3 seconds before displaying the next item
+                menuManager.DisplaySelectedItem(orderedItem);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid index: " + randomIndex);
+            }
+        }
+        yield return new WaitForSeconds(3f);
+        menuManager.customerText.gameObject.SetActive(false);
     }
 }

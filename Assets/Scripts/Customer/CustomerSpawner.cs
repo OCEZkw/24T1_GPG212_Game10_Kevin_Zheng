@@ -16,7 +16,7 @@ public class CustomerSpawner : MonoBehaviour
         SpawnCustomer();
     }
 
-    private void SpawnCustomer()
+    public void SpawnCustomer()
     {
         // Instantiate a new customer prefab
         GameObject newCustomer = Instantiate(customerPrefab, transform.position, Quaternion.identity);

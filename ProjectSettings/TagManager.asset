@@ -43,3 +43,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Wall
+    uniqueID: 3776333839
+    locked: 0
+  - name: Window
+    uniqueID: 1996310757
+    locked: 0
+  - name: Customer
+    uniqueID: 1558673713
+    locked: 0
+  - name: Counter
+    uniqueID: 3118305571
+    locked: 0
